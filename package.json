@@ -1,0 +1,15 @@
+{
+  "name": "imgbot",
+  "version": "1.0.0",
+  "description": "Basic discord bot test",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryder D.",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}
