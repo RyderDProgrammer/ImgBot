@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const token = process.env.IMGTOKEN;
 
 const client = new Discord.Client();
 
@@ -15,4 +16,4 @@ client.once('ready', () => {
 })
 
 
-client.login(process.env.NEWIMGTOKEN);
+client.login(token);
