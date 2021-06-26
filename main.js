@@ -27,6 +27,9 @@ client.once('ready', () => {
 client.on("message",msg => {
     
     //const args = msg.content.trim().split(/ +/g);
+
+    let userMsg = msg.content.split('/');
+    console.log(userMsg[1]);
     if(msg.author.bot) return;
 
     if(msg.content.startsWith(prefix + "test"))
