@@ -42,7 +42,14 @@ client.on("message",msg => {
     }
     else if(userNameArray.includes(msgUserName) && validImgQuery.includes(imgOrVid))
     {
-        msg.channel.send(msgUserName);
+        if(validImgQuery.indexOf(imgOrVid) < 5)
+        {
+            msg.channel.send("https://anopensuitcase.com/wp-content/uploads/2016/11/maui.jpg");
+        }
+        else
+        {
+            msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+        }
     }
     else
     {
