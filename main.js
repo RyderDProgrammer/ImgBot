@@ -33,30 +33,40 @@ client.on("message",msg => {
     let imgOrVid = userMsg.split(' ')[1];
 
     console.log(msgUserName);
+    console.log(usernameInIDArray(msgUserName));
     //console.log(imgOrVid);
     if(msg.author.bot) return;
 
-    if(msg.content.startsWith(prefix + "test"))
+    if(msg.content.startsWith(prefix))
     {
-        msg.channel.send("This is a test of the bot");
-    }
-    else if(userNameArray.includes(msgUserName) && validImgQuery.includes(imgOrVid))
-    {
-        if(validImgQuery.indexOf(imgOrVid) < 5)
+        if(msg.content.startsWith(prefix + "test"))
         {
-            msg.channel.send("https://anopensuitcase.com/wp-content/uploads/2016/11/maui.jpg");
+            msg.channel.send("This is a test of the bot");
+        }
+        else if(userNameArray.includes(msgUserName) && validImgQuery.includes(imgOrVid))
+        {
+            if(validImgQuery.indexOf(imgOrVid) < 5)
+            {
+                msg.channel.send("https://anopensuitcase.com/wp-content/uploads/2016/11/maui.jpg");
+            }
+            else
+            {
+                msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+            }
         }
         else
         {
-            msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+            msg.channel.send("That is not a valid command I can do");
         }
-    }
-    else
-    {
-        msg.channel.send("That is not a valid command I can do");
     }
 })
 
+function usernameInIDArray(name)
+{
+    let idAsName = userNameArray.indexOf(name);
+    let nameAsID = userIdArray[idAsName];
+    return nameAsID;
+}
 
 
 
