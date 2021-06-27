@@ -9,6 +9,7 @@ const prefix = "!";
 //as the 3rd position in the NameArray.
 let userIdArray = new Array();
 let userNameArray = new Array();
+const validImgQuery = ["i","im","img","imag","image","v","vi","vid","vide","video"];
 
 const client = new Discord.Client({fetchAllMembers:true});
 
@@ -20,8 +21,8 @@ client.once('ready', () => {
     userIdArray = list.members.cache.map(member => member.user.id);
     userNameArray = list.members.cache.map(member => member.user.username);
     console.log("The bot is online!");
-    console.log(userIdArray);
-    console.log(userNameArray);
+    //console.log(userIdArray);
+    //console.log(userNameArray);
 })
 
 client.on("message",msg => {
@@ -32,17 +33,20 @@ client.on("message",msg => {
     let imgOrVid = userMsg.split(' ')[1];
 
     console.log(msgUserName);
-    console.log(imgOrVid);
+    //console.log(imgOrVid);
     if(msg.author.bot) return;
 
     if(msg.content.startsWith(prefix + "test"))
     {
         msg.channel.send("This is a test of the bot");
     }
-
-    if(userNameArray.includes(msgUserName))
+    else if(userNameArray.includes(msgUserName) && validImgQuery.includes(imgOrVid))
     {
         msg.channel.send(msgUserName);
+    }
+    else
+    {
+        msg.channel.send("That is not a valid command I can do");
     }
 })
 
