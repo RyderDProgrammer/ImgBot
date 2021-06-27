@@ -26,10 +26,13 @@ client.once('ready', () => {
 
 client.on("message",msg => {
     
-    //const args = msg.content.trim().split(/ +/g);
+    //let userMsg = msg.content.replace('!','');
+    let userMsg = msg.content.slice(1);
+    let msgUserName = userMsg.split(' ')[0];
+    let imgOrVid = userMsg.split(' ')[1];
 
-    let userMsg = msg.content.split('!');
-    console.log(userMsg[1]);
+    console.log(msgUserName);
+    console.log(imgOrVid);
     if(msg.author.bot) return;
 
     if(msg.content.startsWith(prefix + "test"))
@@ -37,9 +40,9 @@ client.on("message",msg => {
         msg.channel.send("This is a test of the bot");
     }
 
-    if(userNameArray.includes(userMsg[1]))
+    if(userNameArray.includes(msgUserName))
     {
-        msg.channel.send(userMsg[1]);
+        msg.channel.send(msgUserName);
     }
 })
 
