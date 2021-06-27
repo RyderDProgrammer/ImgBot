@@ -9,7 +9,11 @@ const prefix = "!";
 //as the 3rd position in the NameArray.
 let userIdArray = new Array();
 let userNameArray = new Array();
+
 const validImgQuery = ["i","im","img","imag","image","v","vi","vid","vide","video"];
+
+let imgArray = new Array();
+let vidArray = new Array();
 
 const client = new Discord.Client({fetchAllMembers:true});
 
@@ -26,16 +30,14 @@ client.once('ready', () => {
 })
 
 client.on("message",msg => {
-    
-    //let userMsg = msg.content.replace('!','');
+    if(msg.author.bot) return;
     let userMsg = msg.content.slice(1);
     let msgUserName = userMsg.split(' ')[0];
     let imgOrVid = userMsg.split(' ')[1];
-
+    
     console.log(msgUserName);
     console.log(usernameInIDArray(msgUserName));
     //console.log(imgOrVid);
-    if(msg.author.bot) return;
 
     if(msg.content.startsWith(prefix))
     {
@@ -67,7 +69,5 @@ function usernameInIDArray(name)
     let nameAsID = userIdArray[idAsName];
     return nameAsID;
 }
-
-
 
 client.login(token);
