@@ -28,7 +28,7 @@ client.on("message",msg => {
     
     //const args = msg.content.trim().split(/ +/g);
 
-    let userMsg = msg.content.split('/');
+    let userMsg = msg.content.split('!');
     console.log(userMsg[1]);
     if(msg.author.bot) return;
 
@@ -37,10 +37,10 @@ client.on("message",msg => {
         msg.channel.send("This is a test of the bot");
     }
 
-    // if(args[0].toLowerCase() == 'im')
-    // {
-    //     msg.channel.send(`Hi ${args.slice(1).join(' ')}, I'm dad`);
-    // }
+    if(userNameArray.includes(userMsg[1]))
+    {
+        msg.channel.send(userMsg[1]);
+    }
 })
 
 
