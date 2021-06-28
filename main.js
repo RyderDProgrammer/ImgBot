@@ -1,5 +1,6 @@
 'use strict';
 const Discord = require('discord.js');
+const fs = require('fs');
 const token = process.env.IMGTOKEN;
 const serverID = process.env.BOTSERVERID;
 const prefix = "!";
@@ -23,9 +24,7 @@ client.once('ready', () => {
     //Making it able to be used in other functions.
     loadAllUserInfo();
     console.log("The bot is online!");
-    // console.log(userIdArray);
-    // console.log(userNameArray);
-    // console.log(userNickArray);
+    createUserFiles();
 })
 
 client.on("message",msg => {
@@ -36,7 +35,7 @@ client.on("message",msg => {
 
     loadAllUserInfo();
     
-    let imgFilter = m => msg.attachments.size > 0 && isImage(msg);
+    let imgFilter = () => msg.attachments.size > 0 && isImage(msg);
     let imgCollect = new Discord.MessageCollector(msg.channel,imgFilter);
 
     if(msg.content.startsWith(prefix))
@@ -95,9 +94,34 @@ function loadAllUserInfo()
     console.log(userNickArray);
 }
 
-function isImage()
+function createUserFiles()
 {
+    //Creating the users image file to hold pictures links.
+    for(let i = 0; i < userIdArray.length; i++)
+    {
+        var fileExist = userIdArray[i] + "img.txt";
+        if(fs.existsSync(fileExist))
+        {
 
+        }
+        else
+        {
+            fs.createWriteStream(userIdArray[i] + "img.txt");
+        }
+    }
+    //Creating the users video files to hold video links.
+    for(let i = 0; i < userIdArray.length; i++)
+    {
+        var fileExist = userIdArray[i] + "vid.txt";
+        if(fs.existsSync(fileExist))
+        {
+
+        }
+        else
+        {
+            fs.createWriteStream("./UserImages/" + userIdArray[i] + "vid.txt");
+        }
+    }
 }
 
 client.login(token);
