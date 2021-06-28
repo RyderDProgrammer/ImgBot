@@ -1,6 +1,7 @@
 'use strict';
 const Discord = require('discord.js');
 const fs = require('fs');
+const path = require('path');
 const token = process.env.IMGTOKEN;
 const serverID = process.env.BOTSERVERID;
 const prefix = "!";
@@ -106,7 +107,10 @@ function createUserFiles()
         }
         else
         {
-            fs.createWriteStream(userIdArray[i] + "img.txt");
+            var currUser = (userIdArray[i] + "img.txt");
+            fs.writeFile(path.join(__dirname,'/UsersImages',currUser),'',err =>{
+                if(err) throw err;
+            })
         }
     }
     //Creating the users video files to hold video links.
@@ -119,7 +123,10 @@ function createUserFiles()
         }
         else
         {
-            fs.createWriteStream("./UserImages/" + userIdArray[i] + "vid.txt");
+            var currUser = (userIdArray[i] + "vid.txt");
+            fs.writeFile(path.join(__dirname,'/UsersVideos',currUser),'',err =>{
+                if(err) throw err;
+            })
         }
     }
 }
