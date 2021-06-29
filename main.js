@@ -90,9 +90,9 @@ function loadAllUserInfo()
     userNameArray = list.members.cache.map(member => member.user.username);
     userNickArray = list.members.cache.map(member => member.nickname);
 
-    console.log(userIdArray);
-    console.log(userNameArray);
-    console.log(userNickArray);
+    //console.log(userIdArray);
+    //console.log(userNameArray);
+    //console.log(userNickArray);
 }
 
 function createUserFiles()
@@ -100,34 +100,34 @@ function createUserFiles()
     //Creating the users image file to hold pictures links.
     for(let i = 0; i < userIdArray.length; i++)
     {
-        var fileExist = userIdArray[i] + "img.txt";
-        if(fs.existsSync(fileExist))
-        {
-
-        }
-        else
-        {
-            var currUser = (userIdArray[i] + "img.txt");
-            fs.writeFile(path.join(__dirname,'/UsersImages',currUser),'',err =>{
-                if(err) throw err;
-            })
-        }
+        //This super ugly chunk of code ensures that it wont erase any data that
+        //Already exist in the file and checks if the file exist or not.
+        let fileExist = "./UsersImages/" + userIdArray[i] + "img.txt";
+        fs.stat(fileExist, function(stat){
+            if(stat)
+            {
+                console.log(`${userIdArray[i]} image log added`);
+                let currUser = (userIdArray[i] + "img.txt");
+                fs.writeFile(path.join(__dirname,'/UsersImages',currUser),'',err =>{
+                    if(err) throw err;
+                })
+            }
+        })
     }
     //Creating the users video files to hold video links.
     for(let i = 0; i < userIdArray.length; i++)
     {
-        var fileExist = userIdArray[i] + "vid.txt";
-        if(fs.existsSync(fileExist))
-        {
-
-        }
-        else
-        {
-            var currUser = (userIdArray[i] + "vid.txt");
-            fs.writeFile(path.join(__dirname,'/UsersVideos',currUser),'',err =>{
-                if(err) throw err;
-            })
-        }
+        let fileExist = "./UsersVideos/" +userIdArray[i] + "vid.txt";
+        fs.stat(fileExist, function(stat){
+            if(stat)
+            {
+                console.log(`${userIdArray[i]} video log added`);
+                let currUser = (userIdArray[i] + "vid.txt");
+                fs.writeFile(path.join(__dirname,'/UsersVideos',currUser),'',err =>{
+                    if(err) throw err;
+                })
+            }
+        })
     }
 }
 
