@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { callbackify } = require('util');
 const token = process.env.IMGTOKEN;
 const serverID = process.env.BOTSERVERID;
 const prefix = "!";
@@ -26,6 +27,13 @@ client.once('ready', () => {
     loadAllUserInfo();
     console.log("The bot is online!");
     createUserFiles();
+    randomLineInFile("./UsersImages/107262459701645312img.txt");
+})
+
+client.on("message",msg => {
+    loadAllUserInfo();
+    let imgFilter = () => msg.attachments.size > 0 && isImage(msg);
+    let imgCollect = new Discord.MessageCollector(msg.channel,imgFilter);
 })
 
 client.on("message",msg => {
@@ -35,10 +43,6 @@ client.on("message",msg => {
     let imgOrVid = userMsg.split(' ')[1];
 
     loadAllUserInfo();
-    
-    let imgFilter = () => msg.attachments.size > 0 && isImage(msg);
-    let imgCollect = new Discord.MessageCollector(msg.channel,imgFilter);
-
     if(msg.content.startsWith(prefix))
     {
         if(msg.content.startsWith(prefix + "test"))
@@ -129,6 +133,22 @@ function createUserFiles()
             }
         })
     }
+}
+
+//Good stackoverflow response on how to create random line grabs from a text document.
+//Altered slightly because I don't need the callback just the item passed in.
+//https://stackoverflow.com/questions/13392059/grabbing-a-random-line-from-file
+function randomLineInFile(fileName)
+{
+    fs.readFile(fileName, "utf-8", (err,data) => {
+        if(err)throw err;
+
+        var lineAmount = data.split('\n');
+
+        var line = lineAmount[Math.floor(Math.random()*lineAmount.length)];
+
+        return line;
+    })
 }
 
 client.login(token);
