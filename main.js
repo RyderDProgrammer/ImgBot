@@ -1,8 +1,8 @@
 'use strict';
+'use System.IO'
 const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { callbackify } = require('util');
 const token = process.env.IMGTOKEN;
 const serverID = process.env.BOTSERVERID;
 const prefix = "!";
@@ -27,7 +27,6 @@ client.once('ready', () => {
     loadAllUserInfo();
     console.log("The bot is online!");
     createUserFiles();
-    randomLineInFile("./UsersImages/107262459701645312img.txt");
 })
 
 client.on("message",msg => {
@@ -49,12 +48,26 @@ client.on("message",msg => {
         {
             msg.channel.send("This is a test of the bot");
         }
-        else if((userIdArray.includes(usernameInIDArray(msgUserName)) || userIdArray.includes(nicknameInIDArray(msgUserName))) 
-                && validImgQuery.includes(imgOrVid) )
+        else if(userIdArray.includes(usernameInIDArray(msgUserName)) && validImgQuery.includes(imgOrVid))
         {
             if(validImgQuery.indexOf(imgOrVid) < 5)
             {
-                msg.channel.send("https://anopensuitcase.com/wp-content/uploads/2016/11/maui.jpg");
+                let grabImg = "./UsersImages/" + usernameInIDArray(msgUserName) + imgOrVid +".txt";
+                let sendImg = randomLineInFile(grabImg);
+                msg.channel.send(sendImg);
+            }
+            else
+            {
+                msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+            }
+        }
+        //Originally had these 2 together but I figured that it'd be easier on myself personally to split them
+        //so that way I know which xInIDArray to query.
+        else if(userIdArray.includes(nicknameInIDArray(msgUserName)) && validImgQuery.includes(imgOrVid))
+        {
+            if(validImgQuery.indexOf(imgOrVid) < 5)
+            {
+                
             }
             else
             {
@@ -71,9 +84,9 @@ client.on("message",msg => {
 function usernameInIDArray(name)
 {
     let idAsName = userNameArray.indexOf(name);
-    console.log(idAsName);
+    //console.log(idAsName);
     let nameAsID = userIdArray[idAsName];
-    console.log(nameAsID);
+    //console.log(nameAsID);
     return nameAsID;
 }
 
@@ -135,20 +148,31 @@ function createUserFiles()
     }
 }
 
-//Good stackoverflow response on how to create random line grabs from a text document.
-//Altered slightly because I don't need the callback just the item passed in.
-//https://stackoverflow.com/questions/13392059/grabbing-a-random-line-from-file
+//Originally was reading asynchronously now it just reads and actually returns the proper
+//image based on this article I found.
+//https://attacomsian.com/blog/reading-a-file-line-by-line-in-nodejs
 function randomLineInFile(fileName)
 {
-    fs.readFile(fileName, "utf-8", (err,data) => {
-        if(err)throw err;
+    const data = fs.readFileSync(fileName,'utf-8');
 
-        var lineAmount = data.split('\n');
+    const lines = data.split(/\r?\n/);
+    return lines[Math.floor(Math.random()*lines.length)]
+    //console.log(lines[Math.floor(Math.random()*lines.length)]);
 
-        var line = lineAmount[Math.floor(Math.random()*lineAmount.length)];
+    // fs.readFile(fileName, "utf-8", (err,data) => {
+    //     if(err)throw err;
 
-        return line;
-    })
+    //     var lineAmount = data.split('\n');
+
+    //     var line = lineAmount[Math.floor(Math.random()*lineAmount.length)];
+    //     getLine(line)
+    // })
 }
+
+//Shove all things needed for the line and video into this function
+// function getLine(line)
+// {
+//     return "'" + line + "'";
+// }
 
 client.login(token);
