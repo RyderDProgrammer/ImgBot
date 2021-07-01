@@ -157,22 +157,6 @@ function randomLineInFile(fileName)
 
     const lines = data.split(/\r?\n/);
     return lines[Math.floor(Math.random()*lines.length)]
-    //console.log(lines[Math.floor(Math.random()*lines.length)]);
-
-    // fs.readFile(fileName, "utf-8", (err,data) => {
-    //     if(err)throw err;
-
-    //     var lineAmount = data.split('\n');
-
-    //     var line = lineAmount[Math.floor(Math.random()*lineAmount.length)];
-    //     getLine(line)
-    // })
 }
-
-//Shove all things needed for the line and video into this function
-// function getLine(line)
-// {
-//     return "'" + line + "'";
-// }
 
 client.login(token);
