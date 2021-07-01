@@ -1,5 +1,4 @@
 'use strict';
-'use System.IO'
 const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -58,7 +57,9 @@ client.on("message",msg => {
             }
             else
             {
-                msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+                let grabVid = "./UsersVideos/" + usernameInIDArray(msgUserName) + imgOrVid +".txt";
+                let sendVid= randomLineInFile(grabVid);
+                msg.channel.send(sendVid);
             }
         }
         //Originally had these 2 together but I figured that it'd be easier on myself personally to split them
