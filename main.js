@@ -68,11 +68,15 @@ client.on("message",msg => {
         {
             if(validImgQuery.indexOf(imgOrVid) < 5)
             {
-                
+                let grabImg = "./UsersImages/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
+                let sendImg = randomLineInFile(grabImg);
+                msg.channel.send(sendImg);
             }
             else
             {
-                msg.channel.send("https://www.youtube.com/watch?v=5qap5aO4i9A");
+                let grabVid = "./UsersVideos/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
+                let sendVid= randomLineInFile(grabVid);
+                msg.channel.send(sendVid);
             }
         }
         else
@@ -94,9 +98,9 @@ function usernameInIDArray(name)
 function nicknameInIDArray(nick)
 {
     let idAsNick = userNickArray.indexOf(nick);
-    console.log(idAsNick);
+    //console.log(idAsNick);
     let nameAsID = userIdArray[idAsNick];
-    console.log(nameAsID);
+    //console.log(nameAsID);
     return nameAsID;
 }
 
