@@ -36,20 +36,21 @@ client.on("message",msg => {
 
     loadAllusers(msg);
     createUserFiles();
-
     msgInArray(msg);
     // let imgFilter = () => msg.attachments.size > 0 && isImage(msg);
     // let imgCollect = new Discord.MessageCollector(msg.channel,imgFilter);
 
-    /*if(msg.attachments.size > 0)
+    if(msg.attachments.size > 0)
     {
-        console.log(msg.content);
-        fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\nhi", (err) => {
-            if(err) throw err;
-        })
-    }*/
+        var imgLink = msg.attachments.array();
+        //Always overwriting the array at 0 to grab the image. And that way I don't
+        //have to constantly update the array search.
+        imgLink[0] = imgLink[0].url;
+         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+imgLink[0], (err) => {
+             if(err) throw err;
+         })
+    }
 
-    //console.log(userIdArray);
     if(msg.content.startsWith(prefix))
     {
         if(msg.content.startsWith(prefix + "test"))
@@ -126,7 +127,6 @@ function nicknameInIDArray(nick)
     return nameAsID;
 }
 
-
 function createUserFiles()
 {
     //Creating the users image file to hold pictures links.
@@ -183,8 +183,10 @@ function msgInArray(msg)
         if (msgString.includes(imgTypes[i])) 
         {
             console.log(msg.content);
+            return true;
         }
     }
+    return false;
 }
 
 client.login(token);
