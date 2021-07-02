@@ -49,7 +49,7 @@ client.on("message",msg => {
              if(err) throw err;
          })
     }
-    else if(msgInArray(msg))
+    else if(msgInArray(msg) && msg.content.startsWith("https://"))
     {
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
@@ -66,13 +66,13 @@ client.on("message",msg => {
         {
             if(validImgQuery.indexOf(imgOrVid) < 5)
             {
-                let grabImg = "./UsersImages/" + usernameInIDArray(msgUserName) + imgOrVid +".txt";
+                let grabImg = "./UsersImages/" + usernameInIDArray(msgUserName) + "img.txt";
                 let sendImg = randomLineInFile(grabImg);
                 msg.channel.send(sendImg);
             }
             else
             {
-                let grabVid = "./UsersVideos/" + usernameInIDArray(msgUserName) + imgOrVid +".txt";
+                let grabVid = "./UsersVideos/" + usernameInIDArray(msgUserName) + "vid.txt";
                 let sendVid= randomLineInFile(grabVid);
                 msg.channel.send(sendVid);
             }
