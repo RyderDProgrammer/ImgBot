@@ -39,7 +39,8 @@ client.on("message",msg => {
 
     //Checks if the user uploading an image is from their computer such as an actual
     //attachment vs it being a link.
-    if(msg.attachments.size > 0)
+    let spoilCheck = msg.content;
+    if(msg.attachments.size > 0 && !spoilCheck.includes("SPOILER"))
     {
         var imgLink = msg.attachments.array();
         //Always overwriting the array at 0 to grab the image. And that way I don't
@@ -49,7 +50,7 @@ client.on("message",msg => {
              if(err) throw err;
          })
     }
-    else if(msgInArray(msg) && msg.content.startsWith("https://"))
+    else if(msgInArray(msg) && msg.content.startsWith("https://") && !spoilCheck.includes("SPOILER"))
     {
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
