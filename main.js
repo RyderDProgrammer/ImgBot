@@ -36,19 +36,24 @@ client.on("message",msg => {
 
     loadAllusers(msg);
     createUserFiles();
-    msgInArray(msg);
-    // let imgFilter = () => msg.attachments.size > 0 && isImage(msg);
-    // let imgCollect = new Discord.MessageCollector(msg.channel,imgFilter);
 
+    //Checks if the user uploading an image is from their computer such as an actual
+    //attachment vs it being a link.
     if(msg.attachments.size > 0)
     {
         var imgLink = msg.attachments.array();
         //Always overwriting the array at 0 to grab the image. And that way I don't
         //have to constantly update the array search.
         imgLink[0] = imgLink[0].url;
-         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+imgLink[0], (err) => {
+         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
              if(err) throw err;
          })
+    }
+    else if(msgInArray(msg))
+    {
+        fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
+            if(err) throw err;
+        })
     }
 
     if(msg.content.startsWith(prefix))
@@ -182,7 +187,6 @@ function msgInArray(msg)
     {
         if (msgString.includes(imgTypes[i])) 
         {
-            console.log(msg.content);
             return true;
         }
     }
