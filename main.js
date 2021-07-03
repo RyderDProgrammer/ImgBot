@@ -60,8 +60,6 @@ client.on("message",msg => {
     }
     //Similar to the spoiler where it saves space in this else if.
     let vidCont = msg.content;
-    console.log(vidCont);
-    console.log(vidCont.includes("https://"))
     if(msg.attachments.size > 0 && vidInArray(msg) && !spoiler && !imgInArray(msg))
     {
         var vidLink = msg.attachments.array();
