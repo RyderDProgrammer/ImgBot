@@ -3,7 +3,6 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const token = process.env.IMGTOKEN;
-const serverID = process.env.BOTSERVERID;
 const prefix = "!";
 
 //A way to store both userId's, userNames and nicknames into arrays.
@@ -15,6 +14,7 @@ var userNickArray = new Array();
 
 const validImgQuery = ["i","im","img","imag","image","v","vi","vid","vide","video"];
 const imgTypes = [".webp",".png",".jpg",".jpeg",".gif"]
+const vidTypes = [".mp4",".webm",".mov"]
 
 //var imgArray = new Array();
 //var vidArray = new Array();
@@ -37,28 +37,49 @@ client.on("message",msg => {
     loadAllusers(msg);
     createUserFiles();
 
-    //Checks if the user uploading an image is from their computer such as an actual
-    //attachment vs it being a link.
-    let spoilCheck = msg.content;
-    if(msg.attachments.size > 0 && !spoilCheck.includes("SPOILER"))
+    //Saves lines in the 4 ifs below.
+    let spoiler = msg.content.includes("SPOILER");
+
+    //Had to do a similar "error" check here with translating the message into a url if it was a video.
+    if(msg.attachments.size > 0 && !spoiler && !vidInArray(msg))
     {
-        var imgLink = msg.attachments.array();
         //Always overwriting the array at 0 to grab the image. And that way I don't
         //have to constantly update the array search.
+        var imgLink = msg.attachments.array();
         imgLink[0] = imgLink[0].url;
-         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
-             if(err) throw err;
-         })
+        fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
+            if(err) throw err;
+        })
     }
-    else if(msgInArray(msg) && msg.content.startsWith("https://") && !spoilCheck.includes("SPOILER"))
+    //This one grabs images that are uploaded as links vs the one above grabbing them as uploaded files.
+    else if(imgInArray(msg) && msg.content.startsWith("https://") && !spoiler && !vidInArray(msg))
     {
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
+            if(err) throw err;
+        })
+    }
+    //Similar to the spoiler where it saves space in this else if.
+    let vidCont = msg.content;
+    if(msg.attachments.size > 0 && vidInArray(msg) && !spoiler && !imgInArray(msg))
+    {
+        var vidLink = msg.attachments.array();
+        vidLink = vidLink[0].url;
+        if(vidLink.includes("SPOILER_")) return;
+        fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ vidLink, (err) => {
+            if(err) throw err;
+        })
+    }
+    else if(vidCont.includes("https://twitter") || vidCont.includes("https://youtube") || vidCont.includes("https://youtu.be") && !spoiler)
+    {
+        fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
         })
     }
 
     if(msg.content.startsWith(prefix))
     {
+        //My son is a good christian boy.
+        if(msg.channel.nsfw) return;
         if(msg.content.startsWith(prefix + "test"))
         {
             msg.channel.send("This is a test of the bot");
@@ -69,13 +90,13 @@ client.on("message",msg => {
             {
                 let grabImg = "./UsersImages/" + usernameInIDArray(msgUserName) + "img.txt";
                 let sendImg = randomLineInFile(grabImg);
-                msg.channel.send(sendImg);
+                if(sendImg != "") msg.channel.send(sendImg);
             }
             else
             {
                 let grabVid = "./UsersVideos/" + usernameInIDArray(msgUserName) + "vid.txt";
                 let sendVid= randomLineInFile(grabVid);
-                msg.channel.send(sendVid);
+                if(sendVid != "") msg.channel.send(sendVid);
             }
         }
         //Originally had these 2 together but I figured that it'd be easier on myself personally to split them
@@ -86,13 +107,13 @@ client.on("message",msg => {
             {
                 let grabImg = "./UsersImages/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
                 let sendImg = randomLineInFile(grabImg);
-                msg.channel.send(sendImg);
+                if(sendImg != "") msg.channel.send(sendImg);
             }
             else
             {
                 let grabVid = "./UsersVideos/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
                 let sendVid= randomLineInFile(grabVid);
-                msg.channel.send(sendVid);
+                if(sendVid != "") msg.channel.send(sendVid);
             }
         }
         else
@@ -100,6 +121,7 @@ client.on("message",msg => {
             msg.channel.send("That is not a valid command I can do");
         }
     }
+
 })
 
 function loadAllusers(msg) {
@@ -181,13 +203,25 @@ function randomLineInFile(fileName)
 }
 
 //Checks whether or not the link posted for an image contains one of the image types.
-function msgInArray(msg) 
+function imgInArray(msg) 
 {
     let msgString = msg.content;
     for (let i = 0; i < imgTypes.length; i++) 
     {
         if (msgString.includes(imgTypes[i])) 
         {
+            return true;
+        }
+    }
+    return false;
+}
+
+function vidInArray(msg) {
+    let msgVid = msg.attachments.array();
+    msgVid = msgVid[0].url;
+
+    for (let i = 0; i < vidTypes.length; i++) {
+        if (msgVid.includes(vidTypes[i])) {
             return true;
         }
     }
