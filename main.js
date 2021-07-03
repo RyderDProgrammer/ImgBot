@@ -60,6 +60,8 @@ client.on("message",msg => {
     }
     //Similar to the spoiler where it saves space in this else if.
     let vidCont = msg.content;
+    console.log(vidCont);
+    console.log(vidCont.includes("https://"))
     if(msg.attachments.size > 0 && vidInArray(msg) && !spoiler && !imgInArray(msg))
     {
         var vidLink = msg.attachments.array();
@@ -69,7 +71,7 @@ client.on("message",msg => {
             if(err) throw err;
         })
     }
-    else if(vidCont.includes("https://twitter") || vidCont.includes("https://youtube") || vidCont.includes("https://youtu.be") && !spoiler)
+    else if(vidCont.includes("https://twitter") || vidCont.includes("https://www.youtube") || vidCont.includes("https://youtu.be") && !spoiler)
     {
         fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
