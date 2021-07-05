@@ -40,7 +40,8 @@ client.on("message",msg => {
 
     //Saves lines in the 4 ifs below.
     let spoiler = msg.content.includes("SPOILER");
-    var urlLink = "";
+    //Set to 1 so that it won't create any issues with the length being 0 from the start.
+    var urlLink = "1";
     if(msg.attachments.size > 0 && !spoiler)
     {
         urlLink = msg.attachments.array();
@@ -48,40 +49,42 @@ client.on("message",msg => {
     }
     //Tried to do these 2 statements into 1 but I couldn't quite figure out how to grab the url if it was an attachment
     //without just having an if then a nested if else which made it ugly.
-    if(urlLink[0].length > 0 && attachImgArray(urlLink[0]) && !urlLink[0].includes(spoiler))
+    if(urlLink[0].length > 1 && imgInArray(urlLink[0]) && !urlLink[0].includes(spoiler))
     {
         //Always overwriting the array at 0 to grab the image. And that way I don't
         //have to constantly update the array search.
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ urlLink, (err) => {
             if(err) throw err;
             })
+        console.log(`${urlLink} added to ${msg.author.id}'s image file.`)
         return;
     }
     //This one grabs images that are uploaded as links vs the one above grabbing them as uploaded files.
-    else if(imgInArray(msg) && msg.content.startsWith("https://") && !spoiler)
+    else if(imgInArray(msg.content) && msg.content.startsWith("https://") && !spoiler)
     {
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
         })
-    }
-    //Similar to the spoiler where it saves space in this else if.
-    let vidCont = msg.content;
-    if(msg.attachments.size > 0 && !spoiler)
-    {
-        var vidLink = msg.attachments.array();
-        vidLink = vidLink[0].url;
-        //Unfortunately the msg.content doesnt work for uploaded videos until it converted into a url;
-        if(vidLink.includes("SPOILER_")) return;
-        fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ vidLink, (err) => {
-            if(err) throw err;
-        })
+        console.log(`${msg.content} added to ${msg.author.id}'s image file.`)
         return;
     }
-    else if(vidCont.includes("https://twitter") || vidCont.includes("https://www.youtube") || vidCont.includes("https://youtu.be") && !spoiler)
+    let vidLink = msg.content;
+    if(urlLink[0].length > 1 && vidInArray(urlLink[0]) && !urlLink[0].includes(spoiler))
+    {
+        fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ urlLink, (err) => {
+            if(err) throw err;
+        })
+        console.log(`${urlLink[0]} added to ${msg.author.id}'s video file.`)
+        return;
+    }
+    else if(vidLink.includes("https://twitter") || vidLink.includes("https://www.youtube") || 
+    vidLink.includes("https://youtu.be") || vidLink.includes("https://cdn") || vidLink.includes("gif")
+    && !vidLink.includes(spoiler))
     {
         fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
         })
+        console.log(`${msg.content} added to ${msg.author.id}'s video file.`)
         return;
     }
 
@@ -214,22 +217,9 @@ function randomLineInFile(fileName)
 //Checks whether or not the link posted for an image contains one of the image types.
 function imgInArray(msg) 
 {
-    let msgString = msg.content;
     for (let i = 0; i < imgTypes.length; i++) 
     {
-        if (msgString.includes(imgTypes[i])) 
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-function attachImgArray(msg)
-{
-    for(let i = 0; i < imgTypes.length; i++)
-    {
-        if(msg.includes(imgTypes[i]))
+        if (msg.includes(imgTypes[i])) 
         {
             return true;
         }
@@ -238,11 +228,10 @@ function attachImgArray(msg)
 }
 
 function vidInArray(msg) {
-    let msgVid = msg.attachments.array();
-    msgVid = msgVid[0].url;
-
-    for (let i = 0; i < vidTypes.length; i++) {
-        if (msgVid.includes(vidTypes[i])) {
+    for (let i = 0; i < vidTypes.length; i++) 
+    {
+        if (msg.includes(vidTypes[i])) 
+        {
             return true;
         }
     }
