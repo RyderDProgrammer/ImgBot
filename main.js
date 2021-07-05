@@ -1,6 +1,7 @@
 'use strict';
 const Discord = require('discord.js');
 const fs = require('fs');
+const { url } = require('inspector');
 const path = require('path');
 const token = process.env.IMGTOKEN;
 const prefix = "!";
@@ -39,17 +40,19 @@ client.on("message",msg => {
 
     //Saves lines in the 4 ifs below.
     let spoiler = msg.content.includes("SPOILER");
-    
-    //Tried to do these 2 statements into 1 but I couldn't quite figure out how to grab the url if it was an attachment
-    //without just having an if then a nested if else which made it ugly.
+    var urlLink = "";
     if(msg.attachments.size > 0 && !spoiler)
     {
-        var imgLink = msg.attachments.array();
-        imgLink[0] = imgLink[0].url;
-        if(attachImgArray(imgLink[0]))
+        urlLink = msg.attachments.array();
+        urlLink[0] = urlLink[0].url;
+    }
+    //Tried to do these 2 statements into 1 but I couldn't quite figure out how to grab the url if it was an attachment
+    //without just having an if then a nested if else which made it ugly.
+    if(urlLink[0].length > 0 && attachImgArray(urlLink[0]) && !urlLink[0].includes(spoiler))
+    {
         //Always overwriting the array at 0 to grab the image. And that way I don't
         //have to constantly update the array search.
-        fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
+        fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ urlLink, (err) => {
             if(err) throw err;
             })
         return;
@@ -63,20 +66,23 @@ client.on("message",msg => {
     }
     //Similar to the spoiler where it saves space in this else if.
     let vidCont = msg.content;
-    if(msg.attachments.size > 0 && vidInArray(msg) && !spoiler && !imgInArray(msg))
+    if(msg.attachments.size > 0 && !spoiler)
     {
         var vidLink = msg.attachments.array();
         vidLink = vidLink[0].url;
+        //Unfortunately the msg.content doesnt work for uploaded videos until it converted into a url;
         if(vidLink.includes("SPOILER_")) return;
         fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ vidLink, (err) => {
             if(err) throw err;
         })
+        return;
     }
     else if(vidCont.includes("https://twitter") || vidCont.includes("https://www.youtube") || vidCont.includes("https://youtu.be") && !spoiler)
     {
         fs.appendFile("./UsersVideos/" + msg.author.id + "vid.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
         })
+        return;
     }
 
     if(msg.content.startsWith(prefix))
@@ -242,5 +248,4 @@ function vidInArray(msg) {
     }
     return false;
 }
-
 client.login(token);
