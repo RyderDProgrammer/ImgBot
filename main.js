@@ -39,20 +39,21 @@ client.on("message",msg => {
 
     //Saves lines in the 4 ifs below.
     let spoiler = msg.content.includes("SPOILER");
-
-    //Had to do a similar "error" check here with translating the message into a url if it was a video.
-    if(msg.attachments.size > 0 && !spoiler && !vidInArray(msg))
+    
+    //Tried to do these 2 statements into 1 but I couldn't quite figure out how to grab the url if it was an attachment
+    //without just having an if then a nested if else which made it ugly.
+    if(msg.attachments.size > 0 && !spoiler)
     {
-        //Always overwriting the array at 0 to grab the image. And that way I don't
-        //have to constantly update the array search.
         var imgLink = msg.attachments.array();
         imgLink[0] = imgLink[0].url;
+        //Always overwriting the array at 0 to grab the image. And that way I don't
+        //have to constantly update the array search.
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
             if(err) throw err;
         })
     }
     //This one grabs images that are uploaded as links vs the one above grabbing them as uploaded files.
-    else if(imgInArray(msg) && msg.content.startsWith("https://") && !spoiler && !vidInArray(msg))
+    else if(imgInArray(msg) && msg.content.startsWith("https://") && !spoiler)
     {
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ msg.content, (err) => {
             if(err) throw err;
