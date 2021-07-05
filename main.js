@@ -46,11 +46,13 @@ client.on("message",msg => {
     {
         var imgLink = msg.attachments.array();
         imgLink[0] = imgLink[0].url;
+        if(attachImgArray(imgLink[0]))
         //Always overwriting the array at 0 to grab the image. And that way I don't
         //have to constantly update the array search.
         fs.appendFile("./UsersImages/" + msg.author.id + "img.txt", "\n"+ imgLink[0], (err) => {
             if(err) throw err;
-        })
+            })
+        return;
     }
     //This one grabs images that are uploaded as links vs the one above grabbing them as uploaded files.
     else if(imgInArray(msg) && msg.content.startsWith("https://") && !spoiler)
@@ -210,6 +212,18 @@ function imgInArray(msg)
     for (let i = 0; i < imgTypes.length; i++) 
     {
         if (msgString.includes(imgTypes[i])) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+function attachImgArray(msg)
+{
+    for(let i = 0; i < imgTypes.length; i++)
+    {
+        if(msg.includes(imgTypes[i]))
         {
             return true;
         }
