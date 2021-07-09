@@ -25,7 +25,7 @@ const client = new Discord.Client({fetchAllMembers:true});
 client.once('ready', () => {
     //Adding all the users the global constants.
     //Making it able to be used in other functions.
-    // createUserFiles();
+    //createUserFiles();
     console.log("The bot is online!");
 })
 
@@ -92,10 +92,17 @@ client.on("message",msg => {
     {
         //My son is a good christian boy.
         if(msg.channel.nsfw) return;
+        if(msg.content.startsWith(prefix + "commands"))
+        {
+            msg.channel.send("Use !username or !usernick and i-image or v-video to grab a random video or image from that user.");
+            msg.channel.send("Like this !X i or !X img will both pull an image from X's file.")
+            return;
+        }
+        /*
         if(msg.content.startsWith(prefix + "test"))
         {
             msg.channel.send("This is a test of the bot");
-        }
+        }*/
         else if(userIdArray.includes(usernameInIDArray(msgUserName)) && validImgQuery.includes(imgOrVid))
         {
             if(validImgQuery.indexOf(imgOrVid) < 5)
@@ -237,4 +244,5 @@ function vidInArray(msg) {
     }
     return false;
 }
+
 client.login(token);
