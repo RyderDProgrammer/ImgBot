@@ -124,13 +124,13 @@ client.on("message",msg => {
         {
             if(validImgQuery.indexOf(imgOrVid) < 5)
             {
-                let grabImg = "./UsersImages/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
+                let grabImg = "./UsersImages/" + nicknameInIDArray(msgUserName) + "img.txt";
                 let sendImg = randomLineInFile(grabImg);
                 if(sendImg != "") msg.channel.send(sendImg);
             }
             else
             {
-                let grabVid = "./UsersVideos/" + nicknameInIDArray(msgUserName) + imgOrVid +".txt";
+                let grabVid = "./UsersVideos/" + nicknameInIDArray(msgUserName) + "vid.txt";
                 let sendVid= randomLineInFile(grabVid);
                 if(sendVid != "") msg.channel.send(sendVid);
             }
